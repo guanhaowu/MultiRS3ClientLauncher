@@ -4,7 +4,7 @@ This is a simple script for Windows to start up X amount of client and generate 
 The max clients is 36.
 
 ## Warning
-** PLEASE USE AT YOUR OWN RISK **
+**PLEASE USE AT YOUR OWN RISK**
 
 ## Requirement
 * [Python version 3.7](https://www.python.org/downloads/) installed and set in system PATH
