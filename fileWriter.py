@@ -20,20 +20,17 @@ def keybindBlock(pidList):
     if ClientNum <= 12:
         for i in range(ClientNum):
             num = str(i + 1)
-            text = "\n\nF" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[
-                i] + " \n\t return"
+            text = "\n\nF" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
             f1.writelines(text)
     if ClientNum > 12 and ClientNum <= 24:
         for i in range(12,ClientNum):
             num = str(i + 1)
-            text = "\n\n+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[
-                i] + " \n\t return"
+            text = "\n\n+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
             f1.writelines(text)
     if ClientNum > 24 and ClientNum <= 36:
         for i in range(24,ClientNum):
             num = str(i + 1)
-            text = "\n\n^+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[
-                i] + " \n\t return"
+            text = "\n\n^+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
             f1.writelines(text)
     f1.close()
 
@@ -49,7 +46,6 @@ def main():
     y.join()
     print("AHK Script file completed.")
     return True
-
 
 
 if __name__ == '__main__':
