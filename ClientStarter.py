@@ -24,6 +24,7 @@ def runClient(x):
         print("Starting client " + str(i + 1) + "...")
         x = threading.Thread(startClient())
         x.start()
+        time.sleep(0.3)
         i += 1
     x.join()
 
@@ -34,13 +35,14 @@ def main():
     if AmountClient >0 and AmountClient <= 36:
         _AmountClient1 = (AmountClient // 5)
         _AmountClient2 = (AmountClient % 5)
-        for i in range(_AmountClient1):
-            runClient(5)
-            time.sleep(3)
+        if _AmountClient1>0:
+            for i in range(_AmountClient1):
+                runClient(5)
+                time.sleep(5)
 
         if _AmountClient2>0:
             runClient(_AmountClient2)
-            time.sleep(3)
+            time.sleep(5)
             status = True
         else:
             status = True
@@ -50,7 +52,8 @@ def main():
             x = threading.Thread(pidCrawler.getPid())
             x.start()
             x.join()
-            fileWriter.main()
+            if(fileWriter.main()):
+                subprocess.Popen(["C:\Program Files\AutoHotkey\AutoHotkey.exe", "GeneratedWindowsSwitcher.ahk"])
     exit()
 
 

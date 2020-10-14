@@ -6,8 +6,6 @@ Echo input: %clients%
 Echo End of Starting Launchers
 IF "%clients%" == "0" GOTO end
 START CMD @cmd /c "call py -3.7 ClientStarter.py %clients%"
-timeout 5
-START "C:\Program Files\AutoHotkey\AutoHotkey.exe" GeneratedWindowsSwitcher.ahk
 Echo Closing script.
 timeout 3
 exit

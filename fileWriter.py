@@ -1,5 +1,16 @@
 import threading
 
+def writeFile():
+    print("Generating Initial AHK file...")
+    f = open("GeneratedWindowsSwitcher.ahk", "w")
+    f.writelines("""#SingleInstance force
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+; #Warn  ; Enable warnings to assist with detecting common errors.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+""")
+    f.close()
+
 
 def keybindBlock(pidList):
     ClientNum = len(pidList)
@@ -26,7 +37,6 @@ def keybindBlock(pidList):
             f1.writelines(text)
     f1.close()
 
-
 def main():
     x = threading.Thread(writeFile())
     x.start()
@@ -38,17 +48,8 @@ def main():
     y.start()
     y.join()
     print("AHK Script file completed.")
+    return True
 
-def writeFile():
-    print("Generating Initial AHK file...")
-    f = open("GeneratedWindowsSwitcher.ahk", "w")
-    f.writelines("""#SingleInstance force
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-""")
-    f.close()
 
 
 if __name__ == '__main__':
