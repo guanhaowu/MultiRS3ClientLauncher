@@ -3,6 +3,9 @@
 This is a simple script for Windows to start up X amount of client and generate a keybind to each window so you can swap betweem them by pressing the keybind.
 The max clients is 36.
 
+## Warning
+** PLEASE USE AT YOUR OWN RISK **
+
 ## Requirement
 * [Python version 3.7](https://www.python.org/downloads/) installed and set in system PATH
 * [AutoHotkey](https://www.autohotkey.com/) installed 
@@ -17,4 +20,4 @@ The max clients is 36.
 * The next 12 clients (13-24) will be set to: **`SHIFT`+`F1`** - **`SHIFT`+`F12`**
 * The last 12 clients (25-36) will be set to: **`CTRL`+`SHIFT`+`F1`** - **`CTRL`+`SHIFT`+`F12`**
 
-Made by [Guan Hao Wu](https://github.com/guanhaowu)
+Made by [Guan Hao Wu](https://github.com/guanhaowu) just for fun.
