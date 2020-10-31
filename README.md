@@ -7,8 +7,12 @@ The max clients is 36.
 **PLEASE USE AT YOUR OWN RISK**
 
 ## Requirement
+* Windows machine
 * [Python version 3.7](https://www.python.org/downloads/) installed and set in system PATH
-* [AutoHotkey](https://www.autohotkey.com/) installed 
+* [AutoHotkey](https://www.autohotkey.com/) installed
+
+### Machine Support
+* Tested on Windows 10 version 1909.
 
 ## Usage
  1. Download the whole folder and keep the files in the same folder.
