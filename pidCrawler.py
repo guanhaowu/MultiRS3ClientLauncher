@@ -72,6 +72,7 @@ def getPid():
         f.write(text)
     print("Pid list file created...")
     f.close()
+    return
 
 
 if __name__ == "__main__":
