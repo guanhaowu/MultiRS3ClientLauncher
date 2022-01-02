@@ -1,10 +1,14 @@
 # MultiRS3ClientLauncher
 
-This is a simple script for Windows to start up X amount of client and generate a keybind to each window so you can swap betweem them by pressing the keybind.
+This is a simple script for Windows to start up X amount of client and generate a keybind to each window so you can swap between them by pressing the keybind.
 The max clients is 36.
 
 ## Warning
-**PLEASE USE AT YOUR OWN RISK**
+**PLEASE USE AT YOUR OWN RISK** 
+This is basically a sort of MACRO to keybind your RS client to a key. 
+It only does **1:1 action**, which should be allowed according to Jagex ToS.
+
+PS: I've sent this github page to Jmods before, they never commented on it, so please use this at your own risk.
 
 ## Video demo:
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/k8eRO7Cnh6g/0.jpg)](http://www.youtube.com/watch?v=k8eRO7Cnh6g "RuneScape Simple Multiclient tool demo")
