@@ -51,7 +51,7 @@ def getPid():
 
     print("*** Find PIDs of a running process by Name ***")
 
-    # Find PIDs od all the running instances of process that contains 'chrome' in it's name
+    # Find PIDs od all the running instances of process that contains 'rs2client' in it's name
     listOfProcessIds = findProcessIdByName('rs2client')
 
     listOfResults = []
