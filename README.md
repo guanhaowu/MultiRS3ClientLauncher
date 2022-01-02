@@ -9,7 +9,11 @@ This is basically a sort of MACRO to keybind your RS client to a key.
 It only does **1:1 action**, which should be allowed according to Jagex ToS.
 
 PS: I've sent this github page to Jmods before on twitch, but they've never commented on it, so please use this at your own risk.
-I've made a post on reddit about this, a Reddit user linked me to another post of 5years ago where JmodTyra stated that AHK is not allowed, but another player quoted another statement (source still needs to be confirmed) "Unless it is used to remap a key to any other button". [Read Reddit thread here](https://www.reddit.com/r/runescape/comments/rtzax9/can_a_jmod_please_confirm_if_this_tool_doesnt/).
+
+
+I've made a post on reddit about this, a Reddit user linked me to another post of 5years ago where JmodTyra, along with other OSRS Mods stated that "AHK is not allowed... You may now only use your operating system's official default mouse keys program, unless it is to remap a key to any other button". [Read Reddit thread here](https://www.reddit.com/r/runescape/comments/rtzax9/can_a_jmod_please_confirm_if_this_tool_doesnt/).
+
+This program has no interaction to the Game world at all. Only Operating System level to bring X window to focus/front.
 
 ## Video demo:
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/k8eRO7Cnh6g/0.jpg)](http://www.youtube.com/watch?v=k8eRO7Cnh6g "RuneScape Simple Multiclient tool demo")
