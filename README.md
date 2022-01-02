@@ -6,7 +6,7 @@ The max clients is 36.
 ## Warning
 **PLEASE USE AT YOUR OWN RISK** 
 This is basically a sort of MACRO to keybind your RS client to a key. 
-It only does **1:1 action**, which should be allowed according to Jagex ToS.
+It only does **1:1 action**.
 
 PS: I've sent this github page to Jmods before on twitch, but they've never commented on it, so please use this at your own risk.
 
