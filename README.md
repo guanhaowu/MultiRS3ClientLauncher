@@ -6,6 +6,10 @@ The max clients is 36.
 ## Warning
 **PLEASE USE AT YOUR OWN RISK**
 
+## Video demo:
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/k8eRO7Cnh6g/0.jpg)](http://www.youtube.com/watch?v=k8eRO7Cnh6g "RuneScape Simple Multiclient tool demo")
+
+
 ## Requirement
 * Windows machine
 * [Python version 3.7](https://www.python.org/downloads/) installed and set in system PATH
