@@ -44,21 +44,21 @@ GOTO a
 Echo [Generating PID list with all RS3 Clients.]
 START CMD @cmd /c "call py -3.7 pidCrawler.py
 Echo [Task completed, returning to options menu...]
-timeout 2
+C:\windows\system32\timeout /t 2
 GOTO a
 
 :CreateAHKScript
 Echo [Generating AHK script with all RS3 Clients PID...]
 START CMD @cmd /c "call py -3.7 fileWriter.py
 Echo [Task completed, returning to options menu...]
-timeout 2
+C:\windows\system32\timeout /t 2
 GOTO a
 
 :StartAHKScript
 Echo [Starting AHK script...]
 START GeneratedWindowsSwitcher.ahk
 Echo [Task completed, returning to options menu...]
-timeout 2
+C:\windows\system32\timeout /t 2
 GOTO a
 
 :warn_no_client
@@ -67,10 +67,10 @@ GOTO a
 
 :response
 Echo [Invalid option, returning back to menu option.]
-timeout 2
+C:\windows\system32\timeout /t 2
 GOTO a
 
 :end
 Echo [Closing script.]
-timeout 1
+C:\windows\system32\timeout /t 1
 exit
