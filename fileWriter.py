@@ -38,7 +38,7 @@ def main():
     x = threading.Thread(writeFile())
     x.start()
     x.join()
-    f = open("pidlist.txt")
+    f = open("pidlist.txt",'r+')
     pidlist = f.readlines()
     f.close()
     y = threading.Thread(keybindBlock(pidlist))

@@ -27,7 +27,7 @@ set /p clients="Enter amount of clients (max 36): "
 Echo [input: %clients%]
 Echo [End of Starting Launchers]
 IF "%clients%" == "0" GOTO warn_no_client
-START CMD @cmd /c "call py -3.7 script.py %clients%"
+START CMD @cmd /c "call py -3.10 script.py %clients%"
 GOTO a
 
 :LaunchClient
@@ -37,19 +37,19 @@ set /p clients="Enter amount of clients (max 36): "
 Echo [input: %clients%]
 Echo [End of Starting Launchers]
 IF "%clients%" == "0" GOTO warn_no_client
-START CMD @cmd /c "call py -3.7 clientLauncher.py %clients%"
+START CMD @cmd /c "call py -3.10 clientLauncher.py %clients%"
 GOTO a
 
 :getPID
 Echo [Generating PID list with all RS3 Clients.]
-START CMD @cmd /c "call py -3.7 pidCrawler.py
+START CMD @cmd /c "call py -3.10 pidCrawler.py
 Echo [Task completed, returning to options menu...]
 C:\windows\system32\timeout /t 2
 GOTO a
 
 :CreateAHKScript
 Echo [Generating AHK script with all RS3 Clients PID...]
-START CMD @cmd /c "call py -3.7 fileWriter.py
+START CMD @cmd /c "call py -3.10 fileWriter.py
 Echo [Task completed, returning to options menu...]
 C:\windows\system32\timeout /t 2
 GOTO a

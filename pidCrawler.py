@@ -1,13 +1,18 @@
 import os
-import sys; sys.path.insert(0, os.path.dirname(__file__))
+import sys
 import psutil
 import time
+
+sys.path.insert(0, os.path.dirname(__file__))
+
 # Script from somewhere on the internet to get list of Process, PID and name
 
+"""
+Check if there is any running process that contains the given name processName.
+"""
+
+
 def checkIfProcessRunning(processName):
-    '''
-    Check if there is any running process that contains the given name processName.
-    '''
     # Iterate over the all the running process
     for proc in psutil.process_iter():
         try:
@@ -19,21 +24,22 @@ def checkIfProcessRunning(processName):
     return False
 
 
-def findProcessIdByName(processName):
-    '''
+"""
     Get a list of all the PIDs of a all the running process whose name contains
     the given string processName
-    '''
+"""
 
+
+def findProcessIdByName(processName):
     listOfProcessObjects = []
 
     # Iterate over the all the running process
     for proc in psutil.process_iter():
         try:
-            pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
+            procInfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
             # Check if process name contains the given name string.
-            if processName.lower() in pinfo['name'].lower():
-                listOfProcessObjects.append(pinfo)
+            if processName.lower() in procInfo['name'].lower():
+                listOfProcessObjects.append(procInfo)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
 
@@ -51,7 +57,7 @@ def getPid():
 
     print("*** Find PIDs of a running process by Name ***")
 
-    # Find PIDs od all the running instances of process that contains 'rs2client' in it's name
+    # Find PIDs od all the running instances of process that contains 'rs2client' in its name
     listOfProcessIds = findProcessIdByName('rs2client')
 
     listOfResults = []
@@ -64,7 +70,7 @@ def getPid():
             listOfResults.append((processCreationTime, processID, processName))
 
     listOfResult = sorted(listOfResults)
-    f = open("pidlist.txt", "w")
+    f = open("pidlist.txt", "w+")
     print("Making pid list file...")
     for el in listOfResult:
         print(el)
