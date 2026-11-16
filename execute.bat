@@ -10,42 +10,20 @@ echo Using "%PYTHON_EXE%"
 GOTO a
 :a
 Echo Choose an option:
-Echo 1: Start everything.
-Echo 2: Launch RS3 Clients.
-Echo 3: Generate PID File.
-Echo 4: Create AHK script.
-Echo 5: Start AHK script.
-Echo 6: Exit.
+Echo Open your clients manually through Jagex Launcher first. Sandboxie is optional.
+Echo 1: Generate PID File.
+Echo 2: Create AHK script.
+Echo 3: Start AHK script.
+Echo 4: Resize RuneScape windows using config.ini.
+Echo 5: Exit.
 
-set /p OPTIONS="Choose an option: "
-IF %OPTIONS% == 0 GOTO response
-IF %OPTIONS% == 1 GOTO everything
-IF %OPTIONS% == 2 GOTO LaunchClient
-IF %OPTIONS% == 3 GOTO getPID
-IF %OPTIONS% == 4 GOTO CreateAHKScript
-IF %OPTIONS% == 5 GOTO StartAHKScript
-IF %OPTIONS% == 6 GOTO end
-IF %OPTIONS% geq 7 GOTO response
-GOTO a
-
-:everything
-Echo Starting Script
-set "clients=default 0"
-set /p clients="Enter amount of clients (max 36): "
-Echo [input: %clients%]
-Echo [End of Starting Launchers]
-IF "%clients%" == "0" GOTO warn_no_client
-"%PYTHON_EXE%" script.py %clients%
-GOTO a
-
-:LaunchClient
-Echo [Starting client launcher...]
-set "clients=default 0"
-set /p clients="Enter amount of clients (max 36): "
-Echo [input: %clients%]
-Echo [End of Starting Launchers]
-IF "%clients%" == "0" GOTO warn_no_client
-"%PYTHON_EXE%" clientLauncher.py %clients%
+choice /c 12345 /n /m "Choose an option: "
+if errorlevel 255 goto response
+if errorlevel 5 goto end
+if errorlevel 4 goto ResizeWindows
+if errorlevel 3 goto StartAHKScript
+if errorlevel 2 goto CreateAHKScript
+if errorlevel 1 goto getPID
 GOTO a
 
 :getPID
@@ -69,8 +47,8 @@ Echo [Task completed, returning to options menu...]
 C:\windows\system32\timeout /t 2
 GOTO a
 
-:warn_no_client
-Echo [No number of clients in input found.]
+:ResizeWindows
+"%PYTHON_EXE%" windowResizer.py
 GOTO a
 
 :response

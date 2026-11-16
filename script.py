@@ -1,11 +1,9 @@
-"""Launch clients or use clients already running."""
+"""Generate and start a window switcher for already running clients."""
 import argparse
 import os
 from pathlib import Path
 import shutil
 import subprocess
-import time
-import clientLauncher
 import pidCrawler
 import fileWriter
 
@@ -45,15 +43,11 @@ def start_ahk():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('count', nargs='?', type=int, default=0, help='Number to launch; 0 uses existing clients')
     parser.add_argument('--start-ahk', action='store_true')
     args = parser.parse_args()
     if args.start_ahk:
         start_ahk()
         return
-    if args.count:
-        clientLauncher.run(args.count)
-        time.sleep(5)
     pidCrawler.getPid()
     fileWriter.main()
     start_ahk()

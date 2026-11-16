@@ -13,7 +13,7 @@ to 36 clients, including clients already running in Sandboxie.
 | pip and Python's `venv` module | Installs dependencies into a project environment. Included with standard Python installations. |
 | `psutil>=5.9` | The only third-party Python dependency; listed in `requirements.txt`. |
 | [AutoHotkey v2](https://www.autohotkey.com/) | Runs the generated window-switching script. AutoHotkey v1 cannot run it. |
-| RuneScape 3 and access to your game accounts | Open the clients before generating shortcuts, or configure a directly launchable client executable. |
+| Jagex Launcher, RuneScape 3, and access to your game accounts | Manually start your accounts through Jagex Launcher before generating shortcuts. |
 | [Sandboxie Plus or Classic](https://sandboxie-plus.com/) (optional) | Only needed if you want to run your game clients in sandboxes. |
 
 Keep all project files together in a writable folder. Internet access is needed
@@ -48,7 +48,9 @@ the environment's executable directly.
 
 ## Use existing clients, including Sandboxie clients
 
-1. Open your RuneScape 3 clients through your usual launcher or Sandboxie.
+1. Open Jagex Launcher and manually start each RuneScape 3 account you want to
+   switch between. Sandboxie is optional: if you use it, run Jagex Launcher in
+   your chosen sandbox instances and start the accounts from those launchers.
 2. Wait for their game windows to appear.
 3. Run this tool **outside Sandboxie**, on the same Windows desktop and user
    session as the clients.
@@ -61,7 +63,7 @@ the environment's executable directly.
 This discovers clients, writes `pidlist.txt`, generates
 `GeneratedWindowsSwitcher.ahk`, and starts it with AutoHotkey v2.
 
-Alternatively, double-click `execute.bat`, then choose **3**, **4**, and **5** in
+Alternatively, double-click `execute.bat`, then choose **1**, **2**, and **3** in
 that order. The menu finds the project's `.venv` automatically, then searches
 standard Python installation folders and PATH, skipping Windows Store aliases.
 
@@ -91,16 +93,46 @@ instance. Closing the batch menu does not stop the AutoHotkey script.
 
 | Option | Action |
 | --- | --- |
-| 1 | Launch 1-36 clients, discover clients, generate shortcuts, and start AutoHotkey. |
-| 2 | Launch 1-36 clients only. |
-| 3 | Discover running clients and write `pidlist.txt`. |
-| 4 | Generate the AutoHotkey v2 script from `pidlist.txt`. |
-| 5 | Start the previously generated AutoHotkey script. |
-| 6 | Close the menu. |
+| 1 | Discover running clients and write `pidlist.txt`. |
+| 2 | Generate the AutoHotkey v2 script from `pidlist.txt`. |
+| 3 | Start the previously generated AutoHotkey script. |
+| 4 | Resize detected RuneScape windows using `config.ini`. |
+| 5 | Close the menu. |
 
-For clients already running in Sandboxie, use options **3 -> 4 -> 5**.
-Options 1 and 2 launch ordinary clients; sandbox selection and sandboxed launching
-remain manual steps. Option 5 does not refresh the saved client list.
+After manually starting your accounts through Jagex Launcher, use options
+**1 -> 2 -> 3**. The same steps apply with or without Sandboxie; discovery tries
+to find both ordinary and sandboxed clients. The menu accepts only keys 1-5.
+This tool does not launch game clients or ask for a client count.
+Option 3 does not refresh the saved client list.
+
+## Resize windows
+
+Edit `config.ini` beside the scripts:
+
+```ini
+[windows]
+width = 1024
+height = 768
+```
+
+Choose menu option **4** to apply these dimensions to currently visible RuneScape
+windows, including detected Sandboxie clients. Discovery is performed fresh;
+generating a PID list first is unnecessary. Sizes are the full outer window in
+physical pixels, including the title bar and borders. Each dimension must be
+an integer between 1 and 32767. The game may enforce its own minimum size.
+Use windowed mode; fullscreen clients may ignore sizing requests.
+
+Minimized or maximized windows are restored before resizing. Normal windows keep
+their position. Resizing is requested asynchronously, so a successful request
+does not guarantee the game accepted the exact dimensions. Run outside Sandboxie
+on the same desktop as the clients. This does not change system files or game
+configuration files, and adds no Python dependencies.
+
+To resize from PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe windowResizer.py
+```
 
 ## Individual commands
 
@@ -109,12 +141,6 @@ Run these from the project folder in PowerShell:
 ```powershell
 # Discover existing clients, generate shortcuts, and start the switcher
 .\.venv\Scripts\python.exe script.py
-
-# Launch two ordinary clients, then generate and start the switcher
-.\.venv\Scripts\python.exe script.py 2
-
-# Launch two ordinary clients only
-.\.venv\Scripts\python.exe clientLauncher.py 2
 
 # Discover clients only
 .\.venv\Scripts\python.exe pidCrawler.py
@@ -127,21 +153,6 @@ Run these from the project folder in PowerShell:
 ```
 
 ## Custom installation paths
-
-The ordinary client launcher defaults to this legacy executable:
-
-```text
-C:\Program Files\Jagex\RuneScape Launcher\RuneScape.exe
-```
-
-If that executable is unavailable, open clients through your normal launcher and
-use the existing-client workflow. To configure another directly launchable
-executable:
-
-```powershell
-$env:RS3_CLIENT_PATH = 'D:\Games\RuneScape\RuneScape.exe'
-.\.venv\Scripts\python.exe clientLauncher.py 2
-```
 
 AutoHotkey discovery checks per-user and system registry installation paths,
 standard per-user and Program Files folders, and v2 executable names on PATH.
@@ -174,7 +185,6 @@ started from it. Start the batch menu from that shell to use them.
 | No clients found | Open the actual game windows first. Run discovery outside Sandboxie on the same desktop and Windows user session. |
 | A shortcut does nothing | Regenerate the PID list and AHK script, then restart it. Confirm the target client is still running. |
 | Elevated clients cannot be focused | Try running clients and the switcher with matching privilege levels. |
-| Client executable not found | Configure `RS3_CLIENT_PATH`, or launch through Jagex/Sandboxie manually and use the existing-client workflow. |
 | More than 36 clients found | Close extra clients before generating the script; generation supports at most 36 unique PIDs. |
 
 `pidlist.txt` and `GeneratedWindowsSwitcher.ahk` are generated locally and ignored

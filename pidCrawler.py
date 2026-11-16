@@ -26,7 +26,8 @@ def checkIfProcessRunning(processName):
     return bool(findProcessIdByName(processName))
 
 
-def findWindowPids():
+def findWindows(process_pids=()):
+    """Return visible game windows as (HWND, PID) pairs."""
     user32 = ctypes.WinDLL('user32', use_last_error=True)
     callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
     user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
@@ -34,22 +35,26 @@ def findWindowPids():
     user32.IsWindowVisible.argtypes = [wintypes.HWND]
     user32.GetClassNameW.argtypes = [wintypes.HWND, wintypes.LPWSTR, ctypes.c_int]
     user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
-    pids = set()
+    windows = []
+    process_pids = set(process_pids)
 
     @callback_type
     def collect(hwnd, _):
         name = ctypes.create_unicode_buffer(512)
         if user32.IsWindowVisible(hwnd) and user32.GetClassNameW(hwnd, name, len(name)):
-            if name.value.casefold().split(':')[-1] == 'jagwindow':
-                pid = wintypes.DWORD()
-                user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-                if pid.value:
-                    pids.add(pid.value)
+            pid = wintypes.DWORD()
+            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+            if pid.value and (name.value.casefold().split(':')[-1] == 'jagwindow' or pid.value in process_pids):
+                windows.append((hwnd, pid.value))
         return True
 
     if not user32.EnumWindows(collect, 0):
         raise ctypes.WinError(ctypes.get_last_error())
-    return pids
+    return windows
+
+
+def findWindowPids():
+    return {pid for _, pid in findWindows()}
 
 
 def getPid():
