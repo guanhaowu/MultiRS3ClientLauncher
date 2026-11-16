@@ -97,11 +97,12 @@ instance. Closing the batch menu does not stop the AutoHotkey script.
 | 2 | Generate the AutoHotkey v2 script from `pidlist.txt`. |
 | 3 | Start the previously generated AutoHotkey script. |
 | 4 | Resize detected RuneScape windows using `config.ini`. |
-| 5 | Close the menu. |
+| 5 | Resize and stack all detected clients at the configured monitor's center. |
+| 6 | Close the menu. |
 
 After manually starting your accounts through Jagex Launcher, use options
 **1 -> 2 -> 3**. The same steps apply with or without Sandboxie; discovery tries
-to find both ordinary and sandboxed clients. The menu accepts only keys 1-5.
+to find both ordinary and sandboxed clients. The menu accepts only keys 1-6.
 This tool does not launch game clients or ask for a client count.
 Option 3 does not refresh the saved client list.
 
@@ -113,6 +114,7 @@ Edit `config.ini` beside the scripts:
 [windows]
 width = 1024
 height = 768
+monitor = primary
 ```
 
 Choose menu option **4** to apply these dimensions to currently visible RuneScape
@@ -132,6 +134,32 @@ To resize from PowerShell:
 
 ```powershell
 .\.venv\Scripts\python.exe windowResizer.py
+```
+
+## Stack windows at a monitor's center
+
+Choose menu option **5** to resize all detected clients to the configured size
+and place them at the same position, centered on one monitor. The windows overlap
+exactly; use your generated hotkeys to switch between them. Exit is option **6**.
+
+Set `monitor = primary` in `config.ini` to use the primary monitor, or choose a
+device name such as `monitor = DISPLAY2`. List connected monitor names with:
+
+```powershell
+.\.venv\Scripts\python.exe windowResizer.py --list-monitors
+```
+
+The tool centers within the monitor's usable work area, excluding the taskbar.
+It supports monitors left of or above the primary display and uses physical
+pixels for mixed display scaling. Missing monitors or dimensions larger than
+the selected work area produce an error before moving any windows. Update the
+configured device name if your display setup changes. Option 4 still resizes
+windows in place; the monitor setting only applies to stacking.
+
+To stack from PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe windowResizer.py --stack
 ```
 
 ## Individual commands

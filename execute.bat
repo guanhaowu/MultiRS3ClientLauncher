@@ -15,11 +15,13 @@ Echo 1: Generate PID File.
 Echo 2: Create AHK script.
 Echo 3: Start AHK script.
 Echo 4: Resize RuneScape windows using config.ini.
-Echo 5: Exit.
+Echo 5: Stack RuneScape windows at monitor center using config.ini.
+Echo 6: Exit.
 
-choice /c 12345 /n /m "Choose an option: "
+choice /c 123456 /n /m "Choose an option: "
 if errorlevel 255 goto response
-if errorlevel 5 goto end
+if errorlevel 6 goto end
+if errorlevel 5 goto StackWindows
 if errorlevel 4 goto ResizeWindows
 if errorlevel 3 goto StartAHKScript
 if errorlevel 2 goto CreateAHKScript
@@ -49,6 +51,10 @@ GOTO a
 
 :ResizeWindows
 "%PYTHON_EXE%" windowResizer.py
+GOTO a
+
+:StackWindows
+"%PYTHON_EXE%" windowResizer.py --stack
 GOTO a
 
 :response
