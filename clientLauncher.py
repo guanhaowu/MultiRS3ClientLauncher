@@ -1,51 +1,32 @@
+"""Launch up to 36 RuneScape clients."""
+import argparse
 import os
-import sys
 import subprocess
-import threading
 import time
-
-sys.path.insert(0, os.path.dirname(__file__))
-
-# Count the arguments
-userInput = sys.argv[1]
 
 
 def executeClient():
-    rsPath = r"C:\Program Files\Jagex\RuneScape Launcher\RuneScape.exe"
-    subprocess.Popen(rsPath)
+    path = os.environ.get('RS3_CLIENT_PATH', r'C:\Program Files\Jagex\RuneScape Launcher\RuneScape.exe')
+    subprocess.Popen([path])
 
 
-def runClient(x):
-    i = 0
-    AClient = int(x)
-    while i < AClient:
-        print("Starting client " + str(i + 1) + "...")
-        x = threading.Thread(executeClient())
-        x.start()
+def runClient(count):
+    for index in range(int(count)):
+        print(f'Starting client {index + 1}...')
+        executeClient()
         time.sleep(0.3)
-        i += 1
-    x.join()
 
 
-def run(userInput):
-    AmountClient = int(userInput)
-    if AmountClient > 0 and AmountClient <= 36:
-        _AmountClient1 = (AmountClient // 5)
-        _AmountClient2 = (AmountClient % 5)
-        if _AmountClient1 > 0:
-            for i in range(_AmountClient1):
-                runClient(5)
-                time.sleep(5)
-
-        if _AmountClient2 > 0:
-            runClient(_AmountClient2)
-            time.sleep(5)
-    return
+def run(count):
+    count = int(count)
+    if not 1 <= count <= 36:
+        raise ValueError('Client count must be between 1 and 36.')
+    for start in range(0, count, 5):
+        runClient(min(5, count - start))
+        time.sleep(5)
 
 
-def main():
-    run(userInput)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('count', type=int)
+    run(parser.parse_args().count)
