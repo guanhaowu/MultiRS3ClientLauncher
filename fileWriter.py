@@ -1,50 +1,42 @@
-import threading
+"""Generate an AutoHotkey v2 window switcher."""
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT = BASE_DIR / 'GeneratedWindowsSwitcher.ahk'
+HEADER = '''#Requires AutoHotkey v2.0
+#SingleInstance Force
+SetWorkingDir A_ScriptDir
+
+ActivateClient(pid) {
+    target := "ahk_pid " pid
+    if WinExist(target) {
+        try WinActivate(target)
+    }
+}
+'''
+
 
 def writeFile():
-    print("Generating Initial AHK file...")
-    f = open("GeneratedWindowsSwitcher.ahk", "w")
-    f.writelines("""#SingleInstance force
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-""")
-    f.close()
+    OUTPUT.write_text(HEADER, encoding='utf-8')
 
 
 def keybindBlock(pidList):
-    ClientNum = len(pidList)
-    f1 = open("GeneratedWindowsSwitcher.ahk", "a")
-    print("Generating Keybinds to file...")
+    pids = list(dict.fromkeys(int(str(pid).strip()) for pid in pidList if str(pid).strip()))
+    if len(pids) > 36 or any(pid <= 0 for pid in pids):
+        raise ValueError('Expected at most 36 positive client PIDs.')
+    with OUTPUT.open('a', encoding='utf-8') as script:
+        for index, pid in enumerate(pids):
+            modifier = ('', '+', '^+')[index // 12]
+            script.write(f'\n{modifier}F{index % 12 + 1}::ActivateClient({pid})\n')
 
-    if ClientNum <= 12:
-        for i in range(ClientNum):
-            num = str(i + 1)
-            text = "\n\nF" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
-            f1.writelines(text)
-    if ClientNum > 12 and ClientNum <= 24:
-        for i in range(12,ClientNum):
-            num = str(i + 1)
-            text = "\n\n+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
-            f1.writelines(text)
-    if ClientNum > 24 and ClientNum <= 36:
-        for i in range(24,ClientNum):
-            num = str(i + 1)
-            text = "\n\n^+F" + num + ":: \n\t IfWinExist, ahk_class JagWindow \n\t\t WinActivate, ahk_pid " + pidList[i] + " \n\t return"
-            f1.writelines(text)
-    f1.close()
 
 def main():
-    x = threading.Thread(writeFile())
-    x.start()
-    x.join()
-    f = open("pidlist.txt")
-    pidlist = f.readlines()
-    f.close()
-    y = threading.Thread(keybindBlock(pidlist))
-    y.start()
-    y.join()
-    print("AHK Script file completed.")
+    pids = (BASE_DIR / 'pidlist.txt').read_text(encoding='utf-8').splitlines()
+    if not any(pid.strip() for pid in pids):
+        raise ValueError('No clients found. Run pidCrawler.py after opening your clients.')
+    writeFile()
+    keybindBlock(pids)
+    print(f'AutoHotkey v2 script created: {OUTPUT}')
     return True
 
 

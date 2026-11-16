@@ -1,79 +1,79 @@
-import os
-import sys; sys.path.insert(0, os.path.dirname(__file__))
+"""Find RS3 processes and Sandboxie-renamed game windows."""
+import ctypes
+from ctypes import wintypes
+from pathlib import Path
 import psutil
-import time
-# Script from somewhere on the internet to get list of Process, PID and name
 
-def checkIfProcessRunning(processName):
-    '''
-    Check if there is any running process that contains the given name processName.
-    '''
-    # Iterate over the all the running process
-    for proc in psutil.process_iter():
-        try:
-            # Check if process name contains the given name string.
-            if processName.lower() in proc.name().lower():
-                return True
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
-    return False
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def findProcessIdByName(processName):
-    '''
-    Get a list of all the PIDs of a all the running process whose name contains
-    the given string processName
-    '''
-
-    listOfProcessObjects = []
-
-    # Iterate over the all the running process
-    for proc in psutil.process_iter():
+    results = []
+    for proc in psutil.process_iter(['pid', 'name']):
         try:
-            pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
-            # Check if process name contains the given name string.
-            if processName.lower() in pinfo['name'].lower():
-                listOfProcessObjects.append(pinfo)
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
+            if processName.lower() in (proc.info['name'] or '').lower():
+                try:
+                    created = proc.create_time()
+                except psutil.Error:
+                    created = 0
+                results.append(dict(proc.info, create_time=created))
+        except psutil.Error:
+            continue
+    return results
 
-    return listOfProcessObjects
+
+def checkIfProcessRunning(processName):
+    return bool(findProcessIdByName(processName))
+
+
+def findWindows(process_pids=()):
+    """Return visible game windows as (HWND, PID) pairs."""
+    user32 = ctypes.WinDLL('user32', use_last_error=True)
+    callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+    user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
+    user32.EnumWindows.restype = wintypes.BOOL
+    user32.IsWindowVisible.argtypes = [wintypes.HWND]
+    user32.GetClassNameW.argtypes = [wintypes.HWND, wintypes.LPWSTR, ctypes.c_int]
+    user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
+    windows = []
+    process_pids = set(process_pids)
+
+    @callback_type
+    def collect(hwnd, _):
+        name = ctypes.create_unicode_buffer(512)
+        if user32.IsWindowVisible(hwnd) and user32.GetClassNameW(hwnd, name, len(name)):
+            pid = wintypes.DWORD()
+            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+            if pid.value and (name.value.casefold().split(':')[-1] == 'jagwindow' or pid.value in process_pids):
+                windows.append((hwnd, pid.value))
+        return True
+
+    if not user32.EnumWindows(collect, 0):
+        raise ctypes.WinError(ctypes.get_last_error())
+    return windows
+
+
+def findWindowPids():
+    return {pid for _, pid in findWindows()}
 
 
 def getPid():
-    print("*** Check if a process is running or not ***")
-
-    # Check if any chrome process was running or not.
-    if checkIfProcessRunning('rs2client'):
-        print('rs2client process is running')
-    else:
-        print('No rs2client process is running')
-
-    print("*** Find PIDs of a running process by Name ***")
-
-    # Find PIDs od all the running instances of process that contains 'rs2client' in it's name
-    listOfProcessIds = findProcessIdByName('rs2client')
-
-    listOfResults = []
-    if len(listOfProcessIds) > 0:
-        print('Process Exists | PID and other details are')
-        for elem in listOfProcessIds:
-            processCreationTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(elem['create_time']))
-            processID = elem['pid']
-            processName = elem['name']
-            listOfResults.append((processCreationTime, processID, processName))
-
-    listOfResult = sorted(listOfResults)
-    f = open("pidlist.txt", "w")
-    print("Making pid list file...")
-    for el in listOfResult:
-        print(el)
-        text = str(el[1]) + "\n"
-        f.write(text)
-    print("Pid list file created...")
-    f.close()
-    return
+    processes = {p['pid']: p for p in findProcessIdByName('rs2client')}
+    for pid in findWindowPids():
+        if pid not in processes:
+            try:
+                created = psutil.Process(pid).create_time()
+            except psutil.Error:
+                created = 0
+            processes[pid] = dict(pid=pid, create_time=created)
+    ordered = sorted(processes.values(), key=lambda p: (p['create_time'], p['pid']))
+    pids = [p['pid'] for p in ordered]
+    (BASE_DIR / 'pidlist.txt').write_text(''.join(f'{pid}\n' for pid in pids), encoding='utf-8')
+    print(f'Found {len(pids)} RuneScape client(s): {pids}')
+    if not pids:
+        print('Run this tool outside Sandboxie, on the same Windows desktop as the clients.')
+    return pids
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     getPid()
